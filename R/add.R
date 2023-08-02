@@ -48,13 +48,19 @@ addAlignments <- function(guideSet,
   targets <- guideSet@targets
   targets_comp <- targets[targets$repname %in% repnames_comp]
   
-  # Compute alignments
-  message(paste0('Computing alignments for ', paste(repnames_comp, collapse = ', ')))
-  alignments_comp <- 
-    DNAStringSetList(unlist(tapply(1:length(targets_comp), targets_comp$repname, function(x)
-    {
-      .compMSA(targets_comp[x], max_gap_freq, iterations, refinements, seed = seed)  
-    })))
+  # Check if repnames_comp is empty
+  if (length(repnames_comp) > 0) {
+    # Compute alignments
+    message(paste0('Computing alignments for ', paste(repnames_comp, collapse = ', ')))
+    alignments_comp <- 
+      DNAStringSetList(unlist(tapply(1:length(targets_comp), targets_comp$repname, function(x)
+      {
+        .compMSA(targets_comp[x], max_gap_freq, iterations, refinements, seed = seed)  
+      })))
+  } else {
+    message("MSA provided for all families. Skipping compute alignments...")
+    alignments_comp <- DNAStringSetList()
+  }
   
   # Import alignments
   if(!is.null(files)) 
