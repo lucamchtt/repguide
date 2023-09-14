@@ -797,7 +797,8 @@ plotCombinations <- function(guideSet)
     p_cons_cov <-
       kmers %>% 
       filter(on_target == 1) %>% 
-      mutate(con_bin = cut(con_pos, breaks = seq(0, max(con_pos, na.rm = TRUE) + 250, 250), include.lowest = TRUE, dig.lab = 5)) %>%
+      filter(!is.na(con_pos)) %>%
+      mutate(con_bin = cut(con_pos, breaks = seq(0, max(con_pos) + 250, 250), include.lowest = TRUE, dig.lab = 5)) %>%
       select(repname, te_id, n_guides, con_bin) %>%
       distinct %>%
       count(repname, n_guides, con_bin) %>%
