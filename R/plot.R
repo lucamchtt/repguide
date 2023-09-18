@@ -791,32 +791,32 @@ plotCombinations <- function(guideSet)
             # strip.background = element_blank(),
             # strip.text.x = element_blank())
     
-  if (length(guideSet@alignments) > 0) 
-  {
-    .custom_breaks <- function(x) { c(0, floor(max(x))) }
-    p_cons_cov <-
-      kmers %>% 
-      filter(on_target == 1) %>% 
-      filter(!is.na(con_pos)) %>%
-      mutate(con_bin = cut(con_pos, breaks = seq(0, max(con_pos) + 250, 250), include.lowest = TRUE, dig.lab = 5)) %>%
-      select(repname, te_id, n_guides, con_bin) %>%
-      distinct %>%
-      count(repname, n_guides, con_bin) %>%
-      ggplot(aes(con_bin, n, fill = as.factor(n_guides))) + 
-        geom_bar(stat = 'identity', position = 'dodge') + 
-        facet_wrap(~repname, scales = 'free_y', ncol = 2, strip.position = 'left', drop = FALSE) +
-        #scale_y_continuous(breaks = .custom_breaks) +
-        scale_fill_manual(values = n_guides_col) +
-        scale_y_continuous(breaks = .custom_breaks) +
-        xlab('Position on alignment') + ylab('On-targets (#)') +
-        theme(plot.margin = unit(c(0, 0, 0, 0), "cm"),
-              axis.text.x = element_text(angle = 90, vjust = 0.5),
-              legend.position = 'none')
-              # strip.background = element_blank(),
-              # strip.text.x = element_blank())
-  } else { 
-    p_cons_cov <- .plotEmpty('No alignment provided')
-  }
+ # if (length(guideSet@alignments) > 0) 
+ # {
+ #   .custom_breaks <- function(x) { c(0, floor(max(x))) }
+ #   p_cons_cov <-
+ #     kmers %>% 
+ #     filter(on_target == 1) %>% 
+ #     filter(!is.na(con_pos)) %>%
+ #     mutate(con_bin = cut(con_pos, breaks = seq(0, max(con_pos) + 250, 250), include.lowest = TRUE, dig.lab = 5)) %>%
+ #     select(repname, te_id, n_guides, con_bin) %>%
+ #     distinct %>%
+ #     count(repname, n_guides, con_bin) %>%
+ #     ggplot(aes(con_bin, n, fill = as.factor(n_guides))) + 
+ #       geom_bar(stat = 'identity', position = 'dodge') + 
+ #       facet_wrap(~repname, scales = 'free_y', ncol = 2, strip.position = 'left', drop = FALSE) +
+ #       #scale_y_continuous(breaks = .custom_breaks) +
+ #       scale_fill_manual(values = n_guides_col) +
+ #       scale_y_continuous(breaks = .custom_breaks) +
+ #       xlab('Position on alignment') + ylab('On-targets (#)') +
+ #       theme(plot.margin = unit(c(0, 0, 0, 0), "cm"),
+ #             axis.text.x = element_text(angle = 90, vjust = 0.5),
+ #             legend.position = 'none')
+ #             # strip.background = element_blank(),
+ #             # strip.text.x = element_blank())
+ # } else { 
+ #   p_cons_cov <- .plotEmpty('No alignment provided')
+ # }
   
   # p_heatmap <- # add clustering!
     # kmers %>% 
@@ -837,8 +837,8 @@ plotCombinations <- function(guideSet)
                 'd' = p_score_scatter, 
                 'e' = p_offtarget_cov, 
                 'f' = p_offtarget_dist, 
-                'g' = p_target_cov,
-                'h' = p_cons_cov) 
+                'g' = p_target_cov)
+#                'h' = p_cons_cov) 
                 
   p1 <- cowplot::plot_grid(p_table, labels = 'a')
   p2 <- cowplot::plot_grid(p_on_off_bar,
@@ -858,10 +858,10 @@ plotCombinations <- function(guideSet)
     i <- i + 1
   }
   p4 <- cowplot::plot_grid(plotlist = liste, labels = 'g', nrow = 1)                          
-  p5 <- cowplot::plot_grid(p_cons_cov,
-                           labels = 'h')
+ # p5 <- cowplot::plot_grid(p_cons_cov,
+ #                          labels = 'h')
                            
-  plots_combined <- cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 1, rel_heights = c(1, 1, 3, 1, 2))
+  plots_combined <- cowplot::plot_grid(p1, p2, p3, p4, ncol = 1, rel_heights = c(1, 1, 3, 1))
   guideSet@plots$combinations <- plots
   guideSet@plots$combinations$figure <- plots_combined
   
